@@ -1,0 +1,195 @@
+import cv2
+import numpy as np
+# LIBRERIAS #
+
+# LEER - MORSTRAR Y GUARDAR IMAGENES #
+# VARIABLES Y COPIAS #
+#################################################
+ruta = "D:\CETI\Vision Artificial\cucharas.jpg"
+imagen_original = cv2.imread(ruta) #Asignamos una variable a la imagen que queremos
+imagen_color1=imagen_original.copy()
+imagen_original_1=imagen_original.copy()
+imagen_color2=imagen_original.copy()
+imagen_color3=imagen_original.copy()
+imagen_cromatica=imagen_original.copy()
+imagen_cromatica1=imagen_original.copy()
+imagen_cromatica2=imagen_original.copy()
+imagen_cromatica3=imagen_original.copy()
+
+m,n,c=imagen_original.shape
+# y,z,a=imagen_cromatica.shape
+# o,p,r=imagen_cromatica1.shape
+# s,t,u=imagen_cromatica2.shape
+# v,w,x=imagen_cromatica3.shape
+
+cv2.imshow("Imagen Original",imagen_original) #Imprime o muestra la varibale guardada
+# cv2.waitKey(0)   # Espera respuesta del teclado
+# cv2.destroyAllWindows() # Cierra la ventana
+cv2.imwrite("Imagen00_original.jpg", imagen_original) # Es para guardar el archivo 
+################################################
+
+
+# BAJAR BRILLO #
+################################################
+imagen2 = imagen_original*0.40 #Cambia el brillo, se cambia el archivo a float 64
+imagen3 = imagen_original*0.80
+imagen2 = imagen2.astype(np.uint8) #Cambiamos la variable de regreso a uint8
+imagen3 = imagen3.astype(np.uint8)
+o,p,q=imagen2.shape
+r,s,t=imagen3.shape
+
+cv2.imshow("Imagen oscura 1",imagen2)
+cv2.imshow("Imagen oscura 2",imagen3)
+# cv2.waitKey(0)   
+# cv2.destroyAllWindows() 
+cv2.imwrite("Imagen02_oscura_1.jpg", imagen2)
+cv2.imwrite("Imagen02_oscura_2.jpg", imagen3)
+################################################
+
+
+# CAMBIAR COLOR #
+#################################################
+imagen_color1[:,:,0]=imagen_color1[:,:,0]+125
+imagen_color2[:,:,1]=imagen_color2[:,:,1]+220
+imagen_color3[:,:,2]=imagen_color3[:,:,2]+200
+
+cv2.imwrite("Imagen05_color1.jpg",imagen_color1)
+cv2.imwrite("Imagen06_color1.jpg",imagen_color2)
+cv2.imwrite("Imagen07_color1.jpg",imagen_color3)
+# cv2.imshow("imagencolor1",imagen_color1)
+# cv2.imshow("imagencolor2",imagen_color2)
+# cv2.imshow("imagencolor3",imagen_color3)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+#################################################
+
+
+# CLASIFICADOR #
+# BLANCO Y NEGRO #
+################################################
+def clasificador_original(imagen_original):
+    imagen_blanconegro1=np.zeros((m,n))
+    for x in range(m):
+        for y in range(n):
+            if  1<imagen_original[x,y,0]<190 \
+                and 3<imagen_original[x,y,1]<190 \
+                    and 3<imagen_original[x,y,2]<235:
+                imagen_blanconegro1[x,y]=255
+    cv2.imwrite("Imagen04_1_clasificador_original.jpg",imagen_blanconegro1)
+    cv2.imshow("Clasificador Original", imagen_blanconegro1)
+    return imagen_blanconegro1
+imagen_blanconegro1 = clasificador_original(imagen_original)
+
+
+def clasificador2(imagen2):
+    imagen_blanconegro2=np.zeros((o,p))
+    for x in range(o):
+        for y in range(p):
+            if  1<imagen2[x,y,0]<70 \
+                and 1<imagen2[x,y,1]<75 \
+                    and 1<imagen2[x,y,2]<100:
+                imagen_blanconegro2[x,y]=255
+    cv2.imwrite("Imagen04_2_clasificador_2.jpg",imagen_blanconegro2)
+    cv2.imshow("Clasificador 2", imagen_blanconegro2)
+    return imagen_blanconegro2
+imagen_blanconegro2 = clasificador2(imagen2)
+
+
+def clasificador3(imagen3):
+    imagen_blanconegro3=np.zeros((r,s))
+    for x in range(r):
+        for y in range(s):
+            if  1<imagen3[x,y,0]<150 \
+                and 1<imagen3[x,y,1]<150 \
+                    and 50<imagen3[x,y,2]<190:
+                imagen_blanconegro3[x,y]=255
+    cv2.imwrite("Imagen04_3_clasificador_3.jpg",imagen_blanconegro3)
+    cv2.imshow("Clasificador 3", imagen_blanconegro3)
+    return imagen_blanconegro3
+imagen_blanconegro3 = clasificador3(imagen3)
+################################################
+
+
+################################################
+imagen_cromatica=imagen_cromatica.astype(np.float32)
+imagen_cromatica1=imagen_cromatica1.astype(np.float32)
+imagen_cromatica2=imagen_cromatica2.astype(np.float32)
+imagen_cromatica3=imagen_cromatica3.astype(np.float32)
+imagen_original=imagen_original.astype(np.float32)
+
+for x in range(m):
+    for y in range(n):
+        imagen_cromatica[x,y,0]=imagen_original[x,y,0]/(imagen_original[x,y,0]+imagen_original[x,y,1]+imagen_original[x,y,2])
+        imagen_cromatica[x,y,1]=imagen_original[x,y,0]/(imagen_original[x,y,0]+imagen_original[x,y,1]+imagen_original[x,y,2])
+        imagen_cromatica[x,y,2]=imagen_original[x,y,0]/(imagen_original[x,y,0]+imagen_original[x,y,1]+imagen_original[x,y,2])
+
+for x in range(o):
+    for y in range(p):
+        imagen_cromatica2[x,y,0]=imagen2[x,y,0]/(imagen2[x,y,0]+imagen2[x,y,1]+imagen2[x,y,2])
+        imagen_cromatica2[x,y,1]=imagen2[x,y,0]/(imagen2[x,y,0]+imagen2[x,y,1]+imagen2[x,y,2])
+        imagen_cromatica2[x,y,2]=imagen2[x,y,0]/(imagen2[x,y,0]+imagen2[x,y,1]+imagen2[x,y,2])
+
+for x in range(r):
+    for y in range(s):
+        imagen_cromatica3[x,y,0]=imagen3[x,y,0]/(imagen3[x,y,0]+imagen3[x,y,1]+imagen3[x,y,2])
+        imagen_cromatica3[x,y,1]=imagen3[x,y,0]/(imagen3[x,y,0]+imagen3[x,y,1]+imagen3[x,y,2])
+        imagen_cromatica3[x,y,2]=imagen3[x,y,0]/(imagen3[x,y,0]+imagen3[x,y,1]+imagen3[x,y,2])
+        
+cv2.imwrite("Imagen05_cromatica_original.jpg",imagen_cromatica)
+cv2.imwrite("Imagen05_cromatica2.jpg",imagen_cromatica2)
+cv2.imwrite("Imagen05_cromatica3.jpg",imagen_cromatica3)
+cv2.imshow("Imagen cromatica 2.jpg",imagen_cromatica)
+cv2.imshow("Imagen cromatica 3.jpg",imagen_cromatica2)
+cv2.imshow("Imagen cromatica 4.jpg",imagen_cromatica3)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows() 
+#################################################
+
+def GW_white_balance(imagen_color1):
+    img_LAB = cv2.cvtColor(imagen_color1, cv2.COLOR_BGR2LAB)
+    avg_a = np.average(img_LAB[:, :, 1])
+    avg_b = np.average(img_LAB[:, :, 2])
+    img_LAB[:, :, 1] = img_LAB[:, :, 1] - ((avg_a - 128) * (img_LAB[:, :, 0] / 255.0) * 1.0)
+    img_LAB[:, :, 2] = img_LAB[:, :, 2] - ((avg_b - 128) * (img_LAB[:, :, 0] / 255.0) * 1.0)
+    balanced_image = cv2.cvtColor(img_LAB, cv2.COLOR_LAB2BGR)
+    return balanced_image
+
+image_gw_balanced = GW_white_balance(imagen_color1)
+
+cv2.imshow("Image", imagen_color1)
+# cv2.imwrite("Imagen white patch_01", image_gw_balanced)
+cv2.imshow("Image GW Balanced", image_gw_balanced)
+
+
+def GW_white_balance2(imagen_color2):
+    img_LAB2 = cv2.cvtColor(imagen_color2, cv2.COLOR_BGR2LAB)
+    avg_a2 = np.average(img_LAB2[:, :, 1])
+    avg_b2 = np.average(img_LAB2[:, :, 2])
+    img_LAB2[:, :, 1] = img_LAB2[:, :, 1] - ((avg_a2 - 128) * (img_LAB2[:, :, 0] / 255.0) * 1.0)
+    img_LAB2[:, :, 2] = img_LAB2[:, :, 2] - ((avg_b2 - 128) * (img_LAB2[:, :, 0] / 255.0) * 1.0)
+    balanced_image2 = cv2.cvtColor(img_LAB2, cv2.COLOR_LAB2BGR)
+    return balanced_image2
+
+image_gw_balanced2 = GW_white_balance2(imagen_color2)
+
+cv2.imshow("Image2", imagen_color2)
+# cv2.imwrite("Imagen white patch_02", image_gw_balanced2)
+cv2.imshow("Image GW Balanced2", image_gw_balanced2)
+
+
+def GW_white_balance3(imagen_color3):
+    img_LAB3 = cv2.cvtColor(imagen_color3, cv2.COLOR_BGR2LAB)
+    avg_a3 = np.average(img_LAB3[:, :, 1])
+    avg_b3 = np.average(img_LAB3[:, :, 2])
+    img_LAB3[:, :, 1] = img_LAB3[:, :, 1] - ((avg_a3 - 128) * (img_LAB3[:, :, 0] / 255.0) * 1.0)
+    img_LAB3[:, :, 2] = img_LAB3[:, :, 2] - ((avg_b3 - 128) * (img_LAB3[:, :, 0] / 255.0) * 1.0)
+    balanced_image3 = cv2.cvtColor(img_LAB3, cv2.COLOR_LAB2BGR)
+    return balanced_image3
+
+image_gw_balanced3 = GW_white_balance3(imagen_color3)
+
+cv2.imshow("Image3", imagen_color3)
+# cv2.imwrite("Imagen white patch_03", image_gw_balanced3)
+cv2.imshow("Image GW Balanced3", image_gw_balanced3)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
