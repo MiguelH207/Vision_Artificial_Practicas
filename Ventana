@@ -1,0 +1,68 @@
+import cv2
+
+ruta = "D:\CETI\Vision Artificial\cucharas.jpg"
+orig = cv2.imread(ruta) #Asignamos una variable a la imagen que queremos
+image = orig.copy()
+template = cv2.imread("D:\CETI\Vision Artificial\imagen_template.png")
+
+image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
+
+methods = [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED, cv2.TM_CCORR,
+            cv2.TM_CCORR_NORMED, cv2.TM_CCOEFF, cv2.TM_CCOEFF_NORMED]
+for method in methods:
+    res = cv2.matchTemplate(image_gray, template_gray, method=method)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+    print(min_val, max_val, min_loc, max_loc)
+if method == cv2.TM_SQDIFF or method == cv2.TM_SQDIFF_NORMED:
+    x1, y1 = min_loc
+    x2, y2 = min_loc[0] + template.shape[1], min_loc[1] + template.shape[0]
+else:
+    x1, y1 = max_loc
+    x2, y2 = max_loc[0] + template.shape[1], max_loc[1] + template.shape[0]
+    cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 3)
+###################################################################################################################################################
+###################################################################################################################################################
+template2 = cv2.imread("D:\CETI\Vision Artificial\imagen_template2.png")
+
+image_gray2 = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+template_gray2 = cv2.cvtColor(template2, cv2.COLOR_BGR2GRAY)
+
+# methods = [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED, cv2.TM_CCORR,
+#             cv2.TM_CCORR_NORMED, cv2.TM_CCOEFF, cv2.TM_CCOEFF_NORMED]
+for method in methods:
+    res2 = cv2.matchTemplate(image_gray2, template_gray2, method=method)
+    min_val2, max_val2, min_loc2, max_loc2 = cv2.minMaxLoc(res2)
+if method == cv2.TM_SQDIFF or method == cv2.TM_SQDIFF_NORMED:
+    x12, y12 = min_loc2
+    x22, y22 = min_loc2[0] + template2.shape[1], min_loc2[1] + template2.shape[0]
+else:
+    x12, y12 = max_loc2
+    x22, y22 = max_loc2[0] + template2.shape[1], max_loc2[1] + template2.shape[0]
+    cv2.rectangle(image, (x12, y12), (x22, y22), (0, 255, 0), 3)
+###################################################################################################################################################
+###################################################################################################################################################
+template3 = cv2.imread("D:\CETI\Vision Artificial\imagen_template3.png")
+
+image_gray3 = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+template_gray3 = cv2.cvtColor(template3, cv2.COLOR_BGR2GRAY)
+
+# methods = [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED, cv2.TM_CCORR,
+#             cv2.TM_CCORR_NORMED, cv2.TM_CCOEFF, cv2.TM_CCOEFF_NORMED]
+for method in methods:
+    res3 = cv2.matchTemplate(image_gray3, template_gray3, method=method)
+    min_val3, max_val3, min_loc3, max_loc3 = cv2.minMaxLoc(res3)
+if method == cv2.TM_SQDIFF or method == cv2.TM_SQDIFF_NORMED:
+    x13, y13 = min_loc3
+    x23, y23 = min_loc3[0] + template3.shape[1], min_loc3[1] + template3.shape[0]
+else:
+    x13, y13 = max_loc3
+    x23, y23 = max_loc3[0] + template3.shape[1], max_loc3[1] + template3.shape[0]
+    cv2.rectangle(image, (x13, y13), (x23, y23), (0, 255, 0), 3)
+    cv2.imshow("Imagen con ventanas", image)
+###################################################################################################################################################
+###################################################################################################################################################
+    
+cv2.imwrite("Imagen_Ventanas.jpg",image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
