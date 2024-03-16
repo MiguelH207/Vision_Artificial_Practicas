@@ -1,0 +1,39 @@
+# LIBRERIAS #
+import cv2
+import numpy as np
+
+# LEER - MORSTRAR Y GUARDAR IMAGENES #
+# VARIABLES Y COPIAS #
+#################################################
+ruta = "cucharas.jpg"
+imagen_original = cv2.imread(ruta) #Asignamos una variable a la imagen que queremos
+imagen_original_1=imagen_original.copy()
+
+m,n,c=imagen_original.shape
+
+
+cv2.imshow("Imagen Original",imagen_original) #Imprime o muestra la varibale guardada
+# cv2.waitKey(0)   # Espera respuesta del teclado
+# cv2.destroyAllWindows() # Cierra la ventana
+cv2.imwrite("Imagen00_original.jpg", imagen_original) # Es para guardar el archivo 
+################################################
+
+
+# CLASIFICADOR #
+# BLANCO Y NEGRO #
+################################################
+def clasificador_original(imagen_original):
+    imagen_blanconegro1=np.zeros((m,n))
+    for x in range(m):
+        for y in range(n):
+            if  0<imagen_original[x,y,0]<130 \
+                and 50<imagen_original[x,y,1]<235 \
+                    and 98<imagen_original[x,y,2]<235:
+                imagen_blanconegro1[x,y]=255
+    cv2.imwrite("Imagen04_1_clasificador_original.jpg",imagen_blanconegro1)
+    cv2.imshow("Clasificador Original", imagen_blanconegro1)
+    return imagen_blanconegro1
+imagen_blanconegro1 = clasificador_original(imagen_original)
+
+cv2.waitKey(0)   # Espera respuesta del teclado
+cv2.destroyAllWindows() # Cierra la ventana
