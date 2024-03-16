@@ -1,0 +1,60 @@
+# LIBRERIAS #
+import cv2
+import numpy as np
+
+
+# LEER - MORSTRAR Y GUARDAR IMAGENES #
+# VARIABLES Y COPIAS #
+#################################################
+ruta = "cucharas.jpg"
+imagen_original = cv2.imread(ruta) #Asignamos una variable a la imagen que queremos
+temp = cv2.imread("imagen_template.png")
+temp2 = cv2.imread("imagen_template2.png")
+temp3 = cv2.imread("imagen_template3.png")
+
+imagen = imagen_original.copy()
+imagen_gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+temp_gris = cv2.cvtColor(temp, cv2.COLOR_BGR2GRAY)
+imagen_gris2 = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+temp_gris2 = cv2.cvtColor(temp2, cv2.COLOR_BGR2GRAY)
+imagen_gris3 = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+temp_gris3 = cv2.cvtColor(temp3, cv2.COLOR_BGR2GRAY)
+
+methods = [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED, cv2.TM_CCORR,
+            cv2.TM_CCORR_NORMED, cv2.TM_CCOEFF, cv2.TM_CCOEFF_NORMED]
+#################################################
+
+
+# VENTANAS #
+################################################
+def windows(rec, rec_gris, save):
+    for method in methods:
+        res = cv2.matchTemplate(imagen_gris, rec_gris, method=method)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+        print(min_val, max_val, min_loc, max_loc)
+    if method == cv2.TM_SQDIFF or method == cv2.TM_SQDIFF_NORMED:
+        x1, y1 = min_loc
+        x2, y2 = min_loc[0] + rec.shape[1], min_loc[1] + rec.shape[0]
+    else:
+        x1, y1 = max_loc
+        x2, y2 = max_loc[0] + rec.shape[1], max_loc[1] + rec.shape[0]
+        cv2.rectangle(imagen, (x1, y1), (x2, y2), (0, 255, 0), 3)
+    
+    # cv2.imshow(save, imagen)
+    cv2.imwrite(save+".jpg",imagen)
+    return imagen
+
+recorte1 = windows(temp, temp_gris,"Imagen10_Ventana_1")
+cv2.waitKey(0)
+recorte2 = windows(temp2, temp_gris2, "Imagen10_Ventana_2")
+cv2.waitKey(0)
+recorte3 = windows(temp3, temp_gris3, "Imagen10_Ventana_3")
+cv2.waitKey(0)
+################################################
+
+
+################################################
+cv2.imshow("Imagen10_Ventana_3", recorte3)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
