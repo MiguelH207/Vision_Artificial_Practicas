@@ -1,0 +1,82 @@
+# LIBRERIAS #
+import cv2
+import numpy as np
+
+
+# LEER - MORSTRAR Y GUARDAR IMAGENES #
+# VARIABLES Y COPIAS #
+#################################################
+ruta = "cucharas.jpg"
+imagen_original = cv2.imread(ruta) #Asignamos una variable a la imagen que queremos
+imagen_cromatica=imagen_original.copy()
+imagen_oscura1=imagen_original.copy()
+imagen_oscura2=imagen_original.copy()
+m,n,c=imagen_original.shape
+imagen_original=imagen_original.astype(np.float32)
+
+
+################################################
+
+
+# CLASIFICADOR #
+# BLANCO Y NEGRO #
+################################################
+def clasificador_original(imagen_original_1,save):
+    imagen_blanconegro1=np.zeros((m,n))
+    for x in range(m):
+        for y in range(n):
+            if  6 <imagen_original_1[x,y,0]< 70  \
+                and 70 < imagen_original_1[x,y,1] < 100 \
+                    and 100<imagen_original_1[x,y,2]<190:
+                imagen_blanconegro1[x,y]=255
+    cv2.imshow(save, imagen_blanconegro1)
+    cv2.imwrite(save+".jpg",imagen_blanconegro1)
+    return imagen_blanconegro1
+
+################################################
+
+def cromatico(imagen_cromatica,save,name_window):
+    imagen_original= cv2.imread(save)
+    m,n,c =imagen_original.shape
+    imagen_cromatica = imagen_original.copy()
+    imagen_cromatica=imagen_cromatica.astype(np.float32)
+    imagen_original=imagen_original.astype(np.float32)
+    for x in range(m):
+        for y in range (n): #Se procesa la imagen 
+            imagen_cromatica[x,y,0] = imagen_original[x,y,0]/(imagen_original[x,y,0]+imagen_original[x,y,1]+imagen_original[x,y,2])
+            imagen_cromatica[x,y,1] = imagen_original[x,y,1]/(imagen_original[x,y,0]+imagen_original[x,y,1]+imagen_original[x,y,2])
+            imagen_cromatica[x,y,2] = imagen_original[x,y,2]/(imagen_original[x,y,0]+imagen_original[x,y,1]+imagen_original[x,y,2])
+    
+    cv2.imshow(name_window,imagen_cromatica)
+    imagen_cromatica = cv2.normalize(imagen_cromatica, dst=None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+    cv2.imwrite(name_window+".jpg",imagen_cromatica)
+    return imagen_cromatica
+
+
+# BAJAR BRILLO #
+################################################
+imagen_original = cv2.imread("cucharas.jpg")
+cv2.imshow("Imagen Original",imagen_original) #Imprime o muestra la varibale guardada
+imagen_oscura1 = imagen_original*0.40 #Cambia el brillo, se cambia el archivo a float 64
+imagen_oscura2 = imagen_original*0.80
+imagen_oscura1 = imagen_oscura1.astype(np.uint8) #Cambiamos la variable de regreso a uint8
+imagen_oscura2 = imagen_oscura2.astype(np.uint8)
+
+cv2.imwrite("Imagen02_oscura_1.jpg", imagen_oscura1)
+cv2.imwrite("Imagen02_oscura_2.jpg", imagen_oscura2)
+cv2.imshow("Imagen oscura 1",imagen_oscura1)
+cv2.imshow("Imagen oscura 2",imagen_oscura2)
+################################################
+
+imagen_cromatica = cromatico(imagen_cromatica,"cucharas.jpg","Cromatica 1")
+imagen_oscura1 = cromatico(imagen_oscura1,"Imagen02_oscura_1.jpg","Cromatica 2")
+imagen_oscura2 = cromatico(imagen_oscura2,"Imagen02_oscura_2.jpg","Cromatica 3")
+#################################################
+
+imagen_cromatica = clasificador_original(imagen_cromatica,"Clasificador 1")
+imagen_oscura1 = clasificador_original(imagen_oscura1,"Clasificador 2")
+imagen_oscura2 = clasificador_original(imagen_oscura2,"Clasificador 3")
+
+cv2.waitKey()
+cv2.destroyAllWindows()
+
