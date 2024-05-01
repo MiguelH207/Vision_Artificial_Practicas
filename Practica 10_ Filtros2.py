@@ -1,6 +1,6 @@
 # Miguel Angel Huerta Castillo      21310236
 # Practica X: Filtros II
-
+ 
 
 import cv2
 import numpy as np
